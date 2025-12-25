@@ -16,7 +16,7 @@ export async function createPost(data: PostInput) {
     if (!validated.success) {
       return {
         success: false,
-        error: validated.error.errors[0].message,
+        error: validated.error.issues[0].message,
       };
     }
 
@@ -91,7 +91,7 @@ export async function updatePost(postId: string, data: PostInput) {
     if (!validated.success) {
       return {
         success: false,
-        error: validated.error.errors[0].message,
+        error: validated.error.issues[0].message,
       };
     }
 
