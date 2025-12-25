@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_REGISTRY = 'docker.io'
-        DOCKER_IMAGE = 'amarfiaz/blog-app'
+        DOCKER_IMAGE = 'amarbaloch/blog-app'
         DOCKER_CREDENTIALS = credentials('dockerhub-credentials')
         KUBECONFIG = '/home/ec2-user/.kube/config'
         GIT_REPO = 'https://github.com/Amar-Fiaz/blog-app.git'

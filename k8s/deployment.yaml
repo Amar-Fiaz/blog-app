@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: blog-app
-        image: amarfiaz/blog-app:latest
+        image: amarbaloch/blog-app:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3000
