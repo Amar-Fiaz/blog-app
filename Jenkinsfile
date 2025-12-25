@@ -5,7 +5,7 @@ pipeline {
         DOCKER_REGISTRY = 'docker.io'
         DOCKER_IMAGE = 'amarbaloch/blog-app'
         DOCKER_CREDENTIALS = credentials('dockerhub-credentials')
-        KUBECONFIG = '/home/ec2-user/.kube/config'
+        KUBECONFIG = '/var/lib/jenkins/.kube/config'
         GIT_REPO = 'https://github.com/Amar-Fiaz/blog-app.git'
     }
 
@@ -70,7 +70,7 @@ pipeline {
                 script {
                     sh """
                         # Set up kubectl to work with KIND cluster
-                        export KUBECONFIG=/home/ec2-user/.kube/config
+                        export KUBECONFIG=/var/lib/jenkins/.kube/config
 
                         # Apply namespace first
                         kubectl apply -f k8s/namespace.yaml
@@ -105,7 +105,7 @@ pipeline {
                 echo 'Verifying deployment...'
                 script {
                     sh """
-                        export KUBECONFIG=/home/ec2-user/.kube/config
+                        export KUBECONFIG=/var/lib/jenkins/.kube/config
                         kubectl get deployment blog-app -n blog-app
                         kubectl get pods -n blog-app -l app=blog-app
                         kubectl get svc blog-app-service -n blog-app
