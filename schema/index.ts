@@ -19,7 +19,7 @@ export const postSchema = z.object({
   slug: z.string().min(3, "Slug must be at least 3 characters"),
   content: z.string().min(10, "Content must be at least 10 characters"),
   excerpt: z.string().optional(),
-  coverImage: z.url("Invalid image URL").optional(),
+  coverImage: z.string().optional(),
   published: z.boolean().default(false),
   categories: z.array(z.string()).optional(),
   tags: z.array(z.string()).optional(),

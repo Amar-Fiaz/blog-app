@@ -8,10 +8,10 @@ import { createPost } from "@/actions/posts";
 export default function CreatePostPage() {
   const router = useRouter();
   const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
   const [content, setContent] = useState("");
   const [excerpt, setExcerpt] = useState("");
-  const [coverImage, setCoverImage] = useState("");
+  const [coverImage, setCoverImage] = useState<File | null>(null);
+  const [coverImagePreview, setCoverImagePreview] = useState("");
   const [published, setPublished] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -23,10 +23,15 @@ export default function CreatePostPage() {
       .replace(/^-|-$/g, "");
   };
 
-  const handleTitleChange = (value: string) => {
-    setTitle(value);
-    if (!slug) {
-      setSlug(generateSlug(value));
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setCoverImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setCoverImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -36,12 +41,14 @@ export default function CreatePostPage() {
     setIsLoading(true);
 
     try {
+      const slug = generateSlug(title);
+
       const result = await createPost({
         title,
         slug,
         content,
         excerpt: excerpt || undefined,
-        coverImage: coverImage || undefined,
+        coverImage: coverImagePreview || undefined,
         published,
       });
 
@@ -98,29 +105,13 @@ export default function CreatePostPage() {
                 type="text"
                 required
                 value={title}
-                onChange={(e) => handleTitleChange(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
                 placeholder="Enter post title"
                 disabled={isLoading}
               />
-            </div>
-
-            <div>
-              <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-2">
-                Slug *
-              </label>
-              <input
-                id="slug"
-                type="text"
-                required
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                placeholder="post-url-slug"
-                disabled={isLoading}
-              />
               <p className="mt-1 text-sm text-gray-500">
-                URL-friendly version of the title (auto-generated)
+                Slug will be auto-generated from the title
               </p>
             </div>
 
@@ -133,7 +124,7 @@ export default function CreatePostPage() {
                 value={excerpt}
                 onChange={(e) => setExcerpt(e.target.value)}
                 rows={3}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900"
                 placeholder="Brief description of your post"
                 disabled={isLoading}
               />
@@ -149,7 +140,7 @@ export default function CreatePostPage() {
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 rows={15}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono text-sm"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 font-mono text-sm text-gray-900"
                 placeholder="Write your post content here... (Markdown supported)"
                 disabled={isLoading}
               />
@@ -157,17 +148,25 @@ export default function CreatePostPage() {
 
             <div>
               <label htmlFor="coverImage" className="block text-sm font-medium text-gray-700 mb-2">
-                Cover Image URL
+                Cover Image
               </label>
               <input
                 id="coverImage"
-                type="url"
-                value={coverImage}
-                onChange={(e) => setCoverImage(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                placeholder="https://example.com/image.jpg"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
                 disabled={isLoading}
               />
+              {coverImagePreview && (
+                <div className="mt-3">
+                  <img
+                    src={coverImagePreview}
+                    alt="Cover preview"
+                    className="max-w-sm rounded-lg shadow-md"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="flex items-center">
