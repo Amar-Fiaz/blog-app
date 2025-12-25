@@ -24,7 +24,7 @@ spec:
       initContainers:
       - name: migrate
         image: amarbaloch/blog-app:latest
-        command: ['sh', '-c', 'npx prisma db push --accept-data-loss']
+        command: ['sh', '-c', 'npx prisma db push --accept-data-loss --url="$DATABASE_URL"']
         env:
         - name: DATABASE_URL
           valueFrom:
