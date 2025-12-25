@@ -12,7 +12,7 @@ export async function register(data: RegisterInput) {
     if (!validated.success) {
       return {
         success: false,
-        error: validated.error.errors[0].message,
+        error: validated.error.issues[0].message,
       };
     }
 
