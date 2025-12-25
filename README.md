@@ -235,3 +235,5 @@ This project is licensed under the MIT License.
 
 ## Webhook Integration
 Jenkins pipeline triggers automatically on GitHub push via webhook.
+
+Webhook configured with anonymous read access enabled.
